@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌪️ Wild Weather! - 3rd Grade Social Science</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2ae080;
+            --secondary: #4ba3e3;
+            --dark: #2c3e50;
+            --light-bg: #f4f9fc;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --purple: #9b59b6;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: var(--light-bg);
+            color: var(--dark);
+            margin: 0;
+            padding: 0;
+            font-size: 1.2rem;
+            user-select: none;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Fredoka One', cursive;
+            text-align: center;
+        }
+
+        header {
+            background: linear-gradient(135deg, #ff7675, #6c5ce7);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        header h1 { margin: 0; font-size: 3rem; text-shadow: 2px 2px var(--dark); }
+        header p { font-size: 1.4rem; margin: 0.5rem 0 0 0; font-weight: bold; }
+
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.05);
+            border: 3px solid #e3eff5;
+        }
+
+        .intro-card { border-left: 8px solid var(--purple); }
+        .game-card { border-left: 8px solid var(--warning); }
+
+        .highlight {
+            background-color: #ffeaa7;
+            padding: 0.2rem 0.5rem;
+            border-radius: 8px;
+            font-weight: bold;
+            color: #d35400;
+        }
+
+        .game-instructions {
+            background-color: #fff9e6;
+            border: 2px dashed var(--warning);
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        /* --- INTERACTIVE MATCHING GAME --- */
+        .match-game-container {
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            margin: 2rem 0;
+            gap: 40px;
+        }
+
+        .match-column {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 45%;
+            z-index: 2;
+        }
+
+        .match-btn {
+            background: white;
+            border: 3px solid #bdc3c7;
+            padding: 1rem;
+            border-radius: 15px;
+            cursor: pointer;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-align: left;
+            transition: all 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            min-height: 80px;
+        }
+
+        .match-column-left .match-btn {
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.3rem;
+            justify-content: center;
+            color: #4a54f1;
+        }
+
+        .match-btn:hover {
+            border-color: var(--secondary);
+            background-color: #f0f8ff;
+            transform: scale(1.02);
+        }
+
+        .match-btn.selected {
+            border-color: var(--warning);
+            background-color: #fff9e6;
+            box-shadow: 0 0 12px rgba(243, 156, 18, 0.5);
+        }
+
+        .match-btn.matched {
+            background-color: #e8f8f5;
+            border-color: var(--primary);
+            color: #27ae60 !important;
+            cursor: default;
+            pointer-events: none;
+        }
+
+        .weather-icon {
+            font-size: 2.2rem;
+        }
+
+        #lines-canvas {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* --- BUTTONS --- */
+        .btn-container { text-align: center; margin-top: 1.5rem; }
+        .btn {
+            background-color: var(--purple);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            font-size: 1.2rem;
+            font-family: 'Fredoka One', cursive;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.2s;
+        }
+        .btn:hover { background-color: #5b4cc4; transform: scale(1.05); }
+
+        @media (max-width: 768px) {
+            .match-game-container { flex-direction: column; gap: 15px; }
+            .match-column { width: 100%; }
+            .match-btn { min-height: 60px; font-size: 0.95rem; }
+            .match-column-left .match-btn { font-size: 1.1rem; }
+            #lines-canvas { display: none; } /* Mobile tap-to-color fall back */
+            header h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🌪️ Wild Weather Extreme!</h1>
+        <p>Social Science - 3rd Grade</p>
+    </header>
+
+    <div class="container">
+
+        <div class="card intro-card">
+            <h2>☁️ Climate Change & Atmosphere</h2>
+            <p>Did you know? <span class="highlight">Climate change</span> has a direct effect on how often and how strong our weather is!</p>
+            <p>It changes the <strong>frequency</strong> (how many times it happens) and the <strong>intensity</strong> (how powerful it is) of natural atmospheric phenomena. Let's find out what they are!</p>
+        </div>
+
+        <div class="card game-card">
+            <h2>🎮 Extreme Weather Matcher!</h2>
+            <div class="game-instructions">
+                <p>⚡ HOW TO PLAY: Click a <b>Weather Phenomenon</b> on the left, then click its correct <b>Meaning</b> on the right to connect them with a lightning line!</p>
+            </div>
+
+            <div class="match-game-container" id="match-container">
+                <canvas id="lines-canvas"></canvas>
+
+                <div class="match-column match-column-left" id="col-weather">
+                    <button class="match-btn" data-id="hurricane">🌀 Hurricane</button>
+                    <button class="match-btn" data-id="tornado">🌪️ Tornado</button>
+                    <button class="match-btn" data-id="flood">🌊 Flood</button>
+                    <button class="match-btn" data-id="drought">☀️ Drought</button>
+                    <button class="match-btn" data-id="blizzard">❄️ Blizzard</button>
+                    <button class="match-btn" data-id="wildfire">🔥 Wildfire</button>
+                </div>
+
+                <div class="match-column" id="col-definitions">
+                    <button class="match-btn" data-match="tornado">A very strong wind. It moves very fast in a spiral cone shape!</button>
+                    <button class="match-btn" data-match="hurricane">A violent storm with very heavy rain and super strong winds.</button>
+                    <button class="match-btn" data-match="drought">This happens when there is little or no precipitation for a very long time.</button>
+                    <button class="match-btn" data-match="flood">A large amount of water that covers an area of land after heavy rains.</button>
+                    <button class="match-btn" data-match="wildfire">An uncontrolled fire that burns very quickly through forests and grasslands.</button>
+                    <button class="match-btn" data-match="blizzard">A freezing cold winter storm with heavy snow and strong winds.</button>
+                </div>
+            </div>
+
+            <div class="btn-container">
+                <button class="btn" onclick="resetGame()">🔄 Mix & Play Again</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const canvas = document.getElementById('lines-canvas');
+        const ctx = canvas.getContext('2d');
+        let selectedWeather = null;
+        let selectedDefinition = null;
+        let matches = [];
+
+        function resizeCanvas() {
+            const container = document.getElementById('match-container');
+            canvas.width = container.offsetWidth;
+            canvas.height = container.offsetHeight;
+            drawLines();
+        }
+        window.addEventListener('resize', resizeCanvas);
+        setTimeout(resizeCanvas, 500);
+
+        const weatherBtns = document.querySelectorAll('#col-weather .match-btn');
+        const defBtns = document.querySelectorAll('#col-definitions .match-btn');
+
+        weatherBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                if(btn.classList.contains('matched')) return;
+                weatherBtns.forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                selectedWeather = btn;
+                checkMatch();
+            });
+        });
+
+        defBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                if(btn.classList.contains('matched')) return;
+                defBtns.forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                selectedDefinition = btn;
+                checkMatch();
+            });
+        });
+
+        function checkMatch() {
+            if (selectedWeather && selectedDefinition) {
+                const weatherId = selectedWeather.dataset.id;
+                const matchId = selectedDefinition.dataset.match;
+
+                if (weatherId === matchId) {
+                    // Success Match
+                    selectedWeather.classList.remove('selected');
+                    selectedDefinition.classList.remove('selected');
+                    selectedWeather.classList.add('matched');
+                    selectedDefinition.classList.add('matched');
+                    
+                    matches.push({
+                        from: selectedWeather,
+                        to: selectedDefinition,
+                        color: getRandomColor()
+                    });
+                    
+                    selectedWeather = null;
+                    selectedDefinition = null;
+                    resizeCanvas();
+
+                    if(matches.length === 6) {
+                        setTimeout(() => {
+                            alert("⚡ AMAZING! You are a Weather Expert now! You matched all the phenomena correctly! 🌟🌦️");
+                        }, 400);
+                    }
+                } else {
+                    // Wrong Match
+                    setTimeout(() => {
+                        alert("❌ Oops! That's not the right match. Read the description carefully and try again!");
+                        selectedWeather.classList.remove('selected');
+                        selectedDefinition.classList.remove('selected');
+                        selectedWeather = null;
+                        selectedDefinition = null;
+                    }, 200);
+                }
+            }
+        }
+
+        function drawLines() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const containerRect = document.getElementById('match-container').getBoundingClientRect();
+
+            matches.forEach(pair => {
+                const rectFrom = pair.from.getBoundingClientRect();
+                const rectTo = pair.to.getBoundingClientRect();
+
+                const x1 = rectFrom.right - containerRect.left;
+                const y1 = rectFrom.top + rectFrom.height / 2 - containerRect.top;
+                const x2 = rectTo.left - containerRect.left;
+                const y2 = rectTo.top + rectTo.height / 2 - containerRect.top;
+
+                ctx.beginPath();
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x2, y2);
+                ctx.strokeStyle = pair.color;
+                ctx.lineWidth = 5;
+                ctx.lineCap = "round";
+                ctx.stroke();
+            });
+        }
+
+        function getRandomColor() {
+            const colors = ['#e74c3c', '#9b59b6', '#3498db', '#f1c40f', '#e67e22', '#1abc9c'];
+            return colors[matches.length % colors.length];
+        }
+
+        function resetGame() {
+            matches = [];
+            selectedWeather = null;
+            selectedDefinition = null;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            document.querySelectorAll('.match-btn').forEach(btn => {
+                btn.className = 'match-btn';
+            });
+
+            // Reshuffle definitions column
+            const colDef = document.getElementById('col-definitions');
+            const elements = Array.from(colDef.children);
+            elements.sort(() => Math.random() - 0.5);
+            elements.forEach(el => colDef.appendChild(el));
+            
+            setTimeout(resizeCanvas, 200);
+        }
+
+        // Shuffle right column right at start
+        const colDef = document.getElementById('col-definitions');
+        const elements = Array.from(colDef.children);
+        elements.sort(() => Math.random() - 0.5);
+        elements.forEach(el => colDef.appendChild(el));
+    </script>
+</body>
+</html>

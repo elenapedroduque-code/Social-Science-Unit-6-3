@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atmospheric Phenomena Adventure</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&family=Fredoka+One&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --sky: #4cc9f0;
+            --sun: #fee440;
+            --storm: #4361ee;
+            --text: #2b2d42;
+            --white: #ffffff;
+            --grass: #90be6d;
+            --ice: #a2d2ff;
+        }
+
+        body {
+            font-family: 'Comic Neue', cursive;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding-bottom: 80px;
+            color: var(--text);
+            text-align: center;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--storm), var(--sky));
+            padding: 25px;
+            color: white;
+            border-bottom: 8px solid var(--sun);
+        }
+
+        h1 { font-family: 'Fredoka One', cursive; font-size: 2.8rem; margin: 0; text-shadow: 2px 2px #000; }
+        h2 { font-family: 'Fredoka One', cursive; color: var(--storm); font-size: 2rem; margin-top: 50px; border-top: 2px solid #ddd; padding-top: 20px; }
+
+        .container { max-width: 1000px; margin: auto; padding: 20px; }
+
+        .game-box {
+            background: var(--white);
+            border-radius: 30px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+            border: 4px solid var(--sky);
+        }
+
+        .draggable-items {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 20px;
+            border: 2px dashed #ccc;
+            position: sticky;
+            top: 10px;
+            z-index: 100;
+        }
+
+        .item {
+            background: var(--sun);
+            padding: 12px 20px;
+            border-radius: 15px;
+            cursor: grab;
+            font-weight: bold;
+            font-size: 1.1rem;
+            box-shadow: 4px 4px 0 #d4a017;
+            user-select: none;
+        }
+
+        .match-grid {
+            display: grid;
+            grid-template-columns: 2.5fr 1fr;
+            gap: 15px;
+            text-align: left;
+            align-items: center;
+        }
+
+        .definition-text { 
+            background: #fff; 
+            padding: 15px; 
+            border-radius: 15px; 
+            font-size: 1.05rem; 
+            border: 2px solid #e9ecef;
+            line-height: 1.4;
+        }
+
+        .drop-slot { 
+            height: 60px; 
+            border: 3px dashed #bbb; 
+            border-radius: 15px; 
+            background: #fdfdfd; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+        }
+
+        .visual-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .visual-card {
+            background: #f8f9fa;
+            border: 2px solid #eee;
+            border-radius: 20px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .visual-img { font-size: 4rem; margin-bottom: 10px; min-height: 80px; display: flex; align-items: center;}
+
+        /* Estilo especial para las bolas de granizo */
+        .hail-balls { font-size: 2.5rem; filter: drop-shadow(2px 2px 2px #ccc); }
+
+        .visual-drop {
+            width: 100%;
+            height: 50px;
+            border: 3px dashed var(--sky);
+            border-radius: 12px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .correct-anim { 
+            background: var(--grass) !important; 
+            color: white !important; 
+            border: none !important; 
+            box-shadow: none !important;
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>⚡ ATMOSPHERIC PHENOMENA 🌈</h1>
+    <p>Read the sentences and match the words to the definitions and pictures!</p>
+</header>
+
+<div class="container">
+
+    <div class="draggable-items" id="all-items">
+        <div class="item" draggable="true" id="rain" data-answer="rain">RAIN</div>
+        <div class="item" draggable="true" id="snow" data-answer="snow">SNOW</div>
+        <div class="item" draggable="true" id="sleet" data-answer="sleet">SLEET</div>
+        <div class="item" draggable="true" id="hail" data-answer="hail">HAIL</div>
+        <div class="item" draggable="true" id="rainbows" data-answer="rainbows">RAINBOWS</div>
+        <div class="item" draggable="true" id="clouds" data-answer="clouds">CLOUDS</div>
+        <div class="item" draggable="true" id="fog" data-answer="fog">FOG</div>
+        <div class="item" draggable="true" id="wind" data-answer="wind">WIND</div>
+        <div class="item" draggable="true" id="thunder" data-answer="thunder">THUNDERSTORMS</div>
+    </div>
+
+    <h2>1. Match the Definitions (Part 1)</h2>
+    <div class="game-box">
+        <div class="match-grid">
+            <div class="definition-text"><strong>It</strong> forms when water droplets in storm clouds freeze and fall to the ground as small hard balls.</div>
+            <div class="drop-slot" data-zone="hail" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+
+            <div class="definition-text"><strong>It</strong> is liquid water droplets that falls from clouds.</div>
+            <div class="drop-slot" data-zone="rain" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+
+            <div class="definition-text"><strong>They</strong> bring thunder and lightning, heavy rain and strong winds.</div>
+            <div class="drop-slot" data-zone="thunder" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+
+            <div class="definition-text"><strong>It</strong> forms when the water vapour in the air freezes and becomes ice crystals.</div>
+            <div class="drop-slot" data-zone="snow" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+
+            <div class="definition-text"><strong>It</strong> is a mixture of partly melted snow and rain.</div>
+            <div class="drop-slot" data-zone="sleet" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+        </div>
+    </div>
+
+    <h2>2. Match the Definitions (Part 2)</h2>
+    <div class="game-box">
+        <div class="match-grid">
+            <div class="definition-text"><strong>It</strong> is air that moves from one place to another.</div>
+            <div class="drop-slot" data-zone="wind" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+
+            <div class="definition-text"><strong>Clouds are</strong> a collection of water droplets and ice crystals that float in the air.</div>
+            <div class="drop-slot" data-zone="clouds" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+
+            <div class="definition-text"><strong>They</strong> form when the Sun shines through rain.</div>
+            <div class="drop-slot" data-zone="rainbows" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+
+            <div class="definition-text"><strong>It</strong> is a thick cloud that touches the ground.</div>
+            <div class="drop-slot" data-zone="fog" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+        </div>
+    </div>
+
+    <h2>3. Visual Match!</h2>
+    <div class="game-box">
+        <div class="visual-grid">
+            <div class="visual-card"><div class="visual-img">🌧️</div><div class="visual-drop" data-zone="rain" ondrop="drop(event)" ondragover="allowDrop(event)"></div></div>
+            <div class="visual-card"><div class="visual-img">❄️</div><div class="visual-drop" data-zone="snow" ondrop="drop(event)" ondragover="allowDrop(event)"></div></div>
+            <div class="visual-card"><div class="visual-img">🌨️💧</div><div class="visual-drop" data-zone="sleet" ondrop="drop(event)" ondragover="allowDrop(event)"></div></div>
+            
+            <div class="visual-card">
+                <div class="visual-img"><span class="hail-balls">⚪⚪<br>⚪</span></div>
+                <p>Ice balls</p>
+                <div class="visual-drop" data-zone="hail" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+            </div>
+
+            <div class="visual-card"><div class="visual-img">🌈</div><div class="visual-drop" data-zone="rainbows" ondrop="drop(event)" ondragover="allowDrop(event)"></div></div>
+            <div class="visual-card"><div class="visual-img">☁️</div><div class="visual-drop" data-zone="clouds" ondrop="drop(event)" ondragover="allowDrop(event)"></div></div>
+            <div class="visual-card"><div class="visual-img">🌫️</div><div class="visual-drop" data-zone="fog" ondrop="drop(event)" ondragover="allowDrop(event)"></div></div>
+            <div class="visual-card"><div class="visual-img">🌬️</div><div class="visual-drop" data-zone="wind" ondrop="drop(event)" ondragover="allowDrop(event)"></div></div>
+            <div class="visual-card"><div class="visual-img">⛈️⚡</div><div class="visual-drop" data-zone="thunder" ondrop="drop(event)" ondragover="allowDrop(event)"></div></div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function allowDrop(ev) { ev.preventDefault(); }
+
+    document.querySelectorAll('.item').forEach(item => {
+        item.addEventListener('dragstart', (ev) => { 
+            ev.dataTransfer.setData("text", ev.target.id); 
+        });
+    });
+
+    function drop(ev) {
+        ev.preventDefault();
+        const data = ev.dataTransfer.getData("text");
+        const draggedElement = document.getElementById(data);
+        const dropZone = ev.target.closest('[data-zone]');
+
+        if (dropZone && draggedElement.dataset.answer === dropZone.dataset.zone) {
+            if (dropZone.children.length === 0) {
+                const clone = draggedElement.cloneNode(true);
+                clone.classList.add('correct-anim');
+                clone.draggable = false;
+                clone.id = "done_" + Math.random();
+                dropZone.appendChild(clone);
+                checkWin();
+            }
+        } else {
+            alert("Oops! Read the sentence again! 🧐");
+        }
+    }
+
+    function checkWin() {
+        const total = document.querySelectorAll('.drop-slot, .visual-drop').length;
+        const correct = document.querySelectorAll('.correct-anim').length;
+        if (total === correct) alert("🌟 EXCELLENT! You are a Science Star! 🌟");
+    }
+</script>
+
+</body>
+</html>
