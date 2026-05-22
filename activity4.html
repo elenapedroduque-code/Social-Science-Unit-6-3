@@ -3,153 +3,172 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spain Climate Games! 🎮</title>
+    <title>Spain's Climate Challenge! 🌍</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Comic+Neue:wght@700&display=swap');
 
         body {
             font-family: 'Comic Neue', cursive;
-            background-color: #f0faff;
+            background-color: #f0f7ff;
             color: #333;
             text-align: center;
-            padding: 20px;
+            padding: 10px;
         }
 
-        h1 { font-family: 'Fredoka One', cursive; color: #ff5722; font-size: 2.5rem; }
-        h2 { color: #0288d1; border-bottom: 3px solid #0288d1; display: inline-block; padding-bottom: 5px; }
-
-        .game-container {
+        .game-card {
             background: white;
             border-radius: 20px;
             padding: 20px;
             margin: 20px auto;
-            max-width: 800px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-            border: 4px solid #b3e5fc;
+            max-width: 750px;
+            border: 4px solid #4db6ac;
+            box-shadow: 0 8px 0px #b2dfdb;
         }
 
-        /* Elementos arrastrables */
+        h1 { font-family: 'Fredoka One', cursive; color: #ff5722; font-size: 2.2rem; }
+        h2 { color: #00796b; font-size: 1.6rem; border-bottom: 2px dashed #4db6ac; padding-bottom: 10px; }
+
+        .draggable-container {
+            background: #fff9c4;
+            padding: 15px;
+            border-radius: 15px;
+            margin: 15px 0;
+            border: 2px solid #fbc02d;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
         .draggable {
-            background: #ff9800;
+            background: #ff7043;
             color: white;
-            padding: 10px 15px;
-            margin: 5px;
+            padding: 10px 18px;
             border-radius: 12px;
             cursor: grab;
-            display: inline-block;
-            box-shadow: 0 4px #e65100;
+            box-shadow: 0 4px #d84315;
+            font-size: 1.1rem;
             user-select: none;
         }
 
-        .draggable:active { transform: translateY(2px); box-shadow: 0 2px #e65100; }
+        .question-list { text-align: left; margin: 20px 0; }
 
-        /* Zonas de soltar */
-        .drop-zone {
+        .question-row {
             background: #f1f8e9;
-            border: 2px dashed #8bc34a;
-            border-radius: 10px;
-            min-height: 40px;
-            min-width: 150px;
-            display: inline-block;
-            vertical-align: middle;
-            margin-left: 10px;
-            padding: 5px;
-        }
-
-        .map-item {
+            margin: 8px 0;
+            padding: 15px;
+            border-radius: 15px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin: 15px 0;
-            padding: 10px;
-            background: #f9f9f9;
-            border-radius: 15px;
+            border: 1px solid #c5e1a5;
         }
 
-        .map-img { width: 120px; border-radius: 8px; border: 2px solid #ddd; }
+        .drop-zone {
+            background: white;
+            border: 2px dashed #999;
+            border-radius: 10px;
+            min-height: 40px;
+            min-width: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 5px;
+            color: #d32f2f;
+            font-weight: bold;
+        }
 
-        .btn {
-            background: #4caf50;
+        .btn-check {
+            background: #ff5722;
             color: white;
             border: none;
-            padding: 15px 30px;
-            font-size: 1.2rem;
+            padding: 15px 45px;
+            font-size: 1.4rem;
             border-radius: 50px;
             cursor: pointer;
-            margin-top: 20px;
             font-family: 'Fredoka One', cursive;
+            box-shadow: 0 5px #e64a19;
+            transition: 0.2s;
         }
 
-        .correct { background-color: #c8e6c9 !important; border-color: #4caf50 !important; }
-        .wrong { background-color: #ffcdd2 !important; border-color: #f44336 !important; }
+        .btn-check:hover { background: #f4511e; }
+        .btn-check:active { transform: translateY(3px); box-shadow: 0 2px #e64a19; }
+
+        .correct { background-color: #c8e6c9 !important; border-color: #4caf50 !important; color: #2e7d32 !important; }
+        .wrong { background-color: #ffcdd2 !important; border-color: #f44336 !important; color: #b71c1c !important; }
         
-        .label-text { font-weight: bold; font-size: 1.1rem; flex: 1; text-align: left; margin-left: 15px; }
+        .hint { font-size: 0.8rem; color: #666; font-style: italic; }
     </style>
 </head>
 <body>
 
-    <h1>🌍 Spain's Climate Games! ☀️</h1>
+    <h1>🌍 Spain's Climate Expert! ☀️</h1>
 
-    <div class="game-container" id="game1">
-        <h2>Game 1: Climate Match!</h2>
-        <p>Drag the 5 climates to their weather description:</p>
+    <div class="game-card">
+        <h2>Game 1: Weather Challenge</h2>
+        <p>Match the climates with their temperatures and rain:</p>
         
-        <div id="options1" style="margin-bottom: 20px;">
-            <div class="draggable" draggable="true" id="oceanic">Oceanic</div>
-            <div class="draggable" draggable="true" id="continental">Continental</div>
-            <div class="draggable" draggable="true" id="mediterranean">Mediterranean</div>
-            <div class="draggable" draggable="true" id="alpine">Alpine</div>
-            <div class="draggable" draggable="true" id="subtropical">Subtropical</div>
+        <div id="labels1" class="draggable-container">
+            <div class="draggable" draggable="true" id="g1-oceanic">Oceanic</div>
+            <div class="draggable" draggable="true" id="g1-continental">Continental</div>
+            <div class="draggable" draggable="true" id="g1-mediterranean">Mediterranean</div>
+            <div class="draggable" draggable="true" id="g1-alpine">Alpine</div>
+            <div class="draggable" draggable="true" id="g1-subtropical">Subtropical</div>
         </div>
 
-        <div style="text-align: left; max-width: 600px; margin: auto;">
-            <p>☁️ Cool winters & mild summers: <span class="drop-zone" data-ans="oceanic"></span></p>
-            <p>🔥 Hot all year round: <span class="drop-zone" data-ans="subtropical"></span></p>
-            <p>❄️ Very cold winters & very hot summers: <span class="drop-zone" data-ans="continental"></span></p>
-            <p>🏔️ Cold winters & cool summers (snow!): <span class="drop-zone" data-ans="alpine"></span></p>
-            <p>☀️ Mild winters & hot summers: <span class="drop-zone" data-ans="mediterranean"></span></p>
+        <div class="question-list">
+            <div class="question-row"><span>🔥 It's <strong>hot all year</strong> round:</span> <div class="drop-zone" data-ans="g1-subtropical">Drop here</div></div>
+            <div class="question-row"><span>❄️ <strong>Cold winters</strong> and <strong>snow</strong>:</span> <div class="drop-zone" data-ans="g1-alpine">Drop here</div></div>
+            <div class="question-row"><span>⛰️ <strong>Very cold</strong> winters / <strong>Very hot</strong> summers:</span> <div class="drop-zone" data-ans="g1-continental">Drop here</div></div>
+            <div class="question-row"><span>🌧️ <strong>Cool winters</strong> and <strong>mild summers</strong>:</span> <div class="drop-zone" data-ans="g1-oceanic">Drop here</div></div>
+            <div class="question-row"><span>☀️ <strong>Mild winters</strong> and <strong>hot summers</strong>:</span> <div class="drop-zone" data-ans="g1-mediterranean">Drop here</div></div>
         </div>
     </div>
 
-    <div class="game-container" id="game2">
-        <h2>Game 2: Map Challenge!</h2>
-        <p>Drag the names to the correct map:</p>
+    <div class="game-card">
+        <h2>Game 2: Map Challenge</h2>
+        <p>Where are these climates located?</p>
 
-        <div id="options2" style="margin-bottom: 20px;">
-            <div class="draggable" draggable="true" id="m-oceanic">Oceanic</div>
-            <div class="draggable" draggable="true" id="m-continental">Continental</div>
-            <div class="draggable" draggable="true" id="m-mediterranean">Mediterranean</div>
-            <div class="draggable" draggable="true" id="m-alpine">Alpine</div>
-            <div class="draggable" draggable="true" id="m-subtropical">Subtropical</div>
+        <div id="labels2" class="draggable-container">
+            <div class="draggable" draggable="true" id="g2-oceanic">Oceanic</div>
+            <div class="draggable" draggable="true" id="g2-continental">Continental</div>
+            <div class="draggable" draggable="true" id="g2-mediterranean">Mediterranean</div>
+            <div class="draggable" draggable="true" id="g2-alpine">Alpine</div>
+            <div class="draggable" draggable="true" id="g2-subtropical">Subtropical</div>
         </div>
 
-        <div class="map-item">
-            <img src="https://i.imgur.com/vH97Z9v.jpg" class="map-img" alt="Alpine Map">
-            <span class="label-text">Which climate is in the high mountains?</span>
-            <span class="drop-zone" data-ans="m-alpine"></span>
+        <div class="question-list">
+            <div class="question-row"><span>📍 East and South coast:</span> <div class="drop-zone" data-ans="g2-mediterranean">Drop here</div></div>
+            <div class="question-row"><span>📍 The North and Northwest:</span> <div class="drop-zone" data-ans="g2-oceanic">Drop here</div></div>
+            <div class="question-row"><span>📍 The Canary Islands:</span> <div class="drop-zone" data-ans="g2-subtropical">Drop here</div></div>
+            <div class="question-row"><span>📍 The Central Plateau:</span> <div class="drop-zone" data-ans="g2-continental">Drop here</div></div>
+            <div class="question-row"><span>📍 High Mountain ranges:</span> <div class="drop-zone" data-ans="g2-alpine">Drop here</div></div>
         </div>
-
-        <div class="map-item">
-            <img src="https://i.imgur.com/W2NlFhE.jpg" class="map-img" alt="Mediterranean Map">
-            <span class="label-text">The East and South coast:</span>
-            <span class="drop-zone" data-ans="m-mediterranean"></span>
-        </div>
-
-        <div class="map-item">
-            <img src="https://i.imgur.com/G5qE2I4.jpg" class="map-img" alt="Oceanic Map">
-            <span class="label-text">The North and Northwest:</span>
-            <span class="drop-zone" data-ans="m-oceanic"></span>
-        </div>
-        
-        <button class="btn" onclick="checkAll()">Check My Answers! ✅</button>
     </div>
+
+    <button class="btn-check" onclick="checkAll()">CHECK ANSWERS! ✅</button>
 
     <script>
+        // Función para desordenar las etiquetas al cargar
+        function shuffleLabels(containerId) {
+            const container = document.getElementById(containerId);
+            for (let i = container.children.length; i >= 0; i--) {
+                container.appendChild(container.children[Math.random() * i | 0]);
+            }
+        }
+
+        // Ejecutar desorden al inicio
+        shuffleLabels('labels1');
+        shuffleLabels('labels2');
+
         const draggables = document.querySelectorAll('.draggable');
         const zones = document.querySelectorAll('.drop-zone');
 
         draggables.forEach(d => {
-            d.addEventListener('dragstart', e => e.dataTransfer.setData('text', e.target.id));
+            d.addEventListener('dragstart', e => {
+                e.dataTransfer.setData('text', e.target.id);
+                e.dataTransfer.setData('content', e.target.innerText);
+            });
         });
 
         zones.forEach(z => {
@@ -157,21 +176,25 @@
             z.addEventListener('drop', e => {
                 e.preventDefault();
                 const id = e.dataTransfer.getData('text');
-                const el = document.getElementById(id);
-                e.target.innerText = el.innerText;
-                e.target.setAttribute('data-user', id);
-                e.target.classList.remove('correct', 'wrong');
+                const text = e.dataTransfer.getData('content');
+                
+                // Solo permite soltar si es del mismo juego
+                if (id.substring(0,2) === z.getAttribute('data-ans').substring(0,2)) {
+                    z.innerText = text;
+                    z.setAttribute('data-user-choice', id);
+                    z.classList.remove('correct', 'wrong');
+                }
             });
         });
 
         function checkAll() {
             zones.forEach(z => {
-                const ans = z.getAttribute('data-ans');
-                const user = z.getAttribute('data-user');
-                if (user === ans) {
-                    z.classList.add('correct');
+                const correctId = z.getAttribute('data-ans');
+                const userId = z.getAttribute('data-user-choice');
+                if (userId === correctId) {
+                    z.className = 'drop-zone correct';
                 } else {
-                    z.classList.add('wrong');
+                    z.className = 'drop-zone wrong';
                 }
             });
         }
